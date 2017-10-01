@@ -1,0 +1,26 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>TS3 Server Status</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    Nickname
+                </div>
+                <div class="col-sm-3">
+                    Connected since
+                </div>
+                <div class="col-sm-3">
+                    Idle for
+                </div>
+            </div>
+            <div class="row" th:each="client : ${clients}">
+                <div class="col-sm-3" th:text="${client.nickname}">nickname</div>
+                <div class="col-sm-3" th:text="${client.connected}">connected</div>
+                <div class="col-sm-3" th:text="${client.idleFor}">idle for</div>
+            </div>
+        </div>
+    </body>
+</html>
