@@ -21,25 +21,8 @@ public class TS3Controller {
     private TS3Service ts3Service;
 
     @RequestMapping("/")
-    public String index() {
-        return "index";
-    }
-
-    @RequestMapping("/channels")
-    @ResponseBody
-    public List<Channel> channels() {
-        return api.getChannels();
-    }
-
-    @RequestMapping("/clients")
     public String clients(Model model) {
         model.addAttribute("clients", ts3Service.getAllClients());
         return "clients";
-    }
-
-    @RequestMapping("/clientsdata")
-    @ResponseBody
-    public List<Client> clientsdata() {
-        return api.getClients();
     }
 }
