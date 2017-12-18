@@ -1,26 +1,33 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>TS3 Server Status</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous" />
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-3">
-                    Nickname
-                </div>
-                <div class="col-sm-3">
-                    Connected since
-                </div>
-                <div class="col-sm-3">
-                    Idle for
-                </div>
-            </div>
-            <div class="row" th:each="client : ${clients}">
-                <div class="col-sm-3" th:text="${client.nickname}">nickname</div>
-                <div class="col-sm-3" th:text="${client.connected}">connected</div>
-                <div class="col-sm-3" th:text="${client.idleFor}">idle for</div>
-            </div>
+        <div class="container-fluid">
+            <table class="table table-striped thead-dark table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">
+                            Nickname
+                        </th>
+                        <th scope="col">
+                            Connected since
+                        </th>
+                        <th scope="col">
+                            Idle for
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="client : ${clients}">
+                        <td th:text="${client.nickname}">nickname</td>
+                        <td th:text="${client.connected}">connected</td>
+                        <td th:text="${client.idleFor}">idle for</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </body>
 </html>
