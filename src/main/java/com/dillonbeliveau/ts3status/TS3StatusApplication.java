@@ -30,7 +30,6 @@ public class TS3StatusApplication {
         api.login("dgb", "***REMOVED***");
         api.selectVirtualServerById(1);
         api.setNickname("ServerMonitorBot");
-        api.sendChannelMessage("ServerMonitorBot online.");
         return api;
     }
 
