@@ -3,6 +3,7 @@ package com.dillonbeliveau.ts3status;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
+import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ public class TS3StatusApplication {
     public TS3Config ts3Config() {
         TS3Config ts3Config = new TS3Config();
         ts3Config.setHost("cyphe.red");
+        ts3Config.setReconnectStrategy(ReconnectStrategy.constantBackoff());
         return ts3Config;
     }
 
