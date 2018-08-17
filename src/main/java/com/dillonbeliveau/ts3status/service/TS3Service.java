@@ -9,6 +9,7 @@ import com.google.common.cache.LoadingCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -27,12 +28,16 @@ public class TS3Service {
     public TS3Service() {
         clients = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.SECONDS)
-                .build(new CacheLoader<CacheKey, List<Client>>() {
+                .build(new CacheLoader<>() {
                     @Override
                     public List<Client> load(CacheKey cacheKey) {
                         switch (cacheKey) {
                             case Online:
-                                return api.getClients();
+                                List<Client> clients = api.getClients();
+                                if (clients == null) {
+                                    return Collections.emptyList();
+                                }
+                                return clients;
                             default:
                                 throw new IllegalArgumentException("Illegal cache key: " + cacheKey);
 

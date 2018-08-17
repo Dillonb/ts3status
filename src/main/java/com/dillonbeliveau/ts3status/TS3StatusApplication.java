@@ -15,7 +15,7 @@ public class TS3StatusApplication {
     public TS3Config ts3Config() {
         TS3Config ts3Config = new TS3Config();
         ts3Config.setHost("cyphe.red");
-        ts3Config.setReconnectStrategy(ReconnectStrategy.constantBackoff());
+        ts3Config.setReconnectStrategy(ReconnectStrategy.constantBackoff(1000));
         return ts3Config;
     }
 
