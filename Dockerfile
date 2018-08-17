@@ -1,4 +1,4 @@
-from maven:3-jdk-10
+FROM maven:3-jdk-10
 COPY pom.xml /app/
 COPY src /app/src
 WORKDIR /app
