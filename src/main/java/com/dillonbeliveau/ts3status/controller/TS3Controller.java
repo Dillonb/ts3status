@@ -15,9 +15,6 @@ import java.util.List;
 @Controller
 public class TS3Controller {
     @Autowired
-    private TS3Api api;
-
-    @Autowired
     private TS3Service ts3Service;
 
     @RequestMapping("/")

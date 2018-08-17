@@ -2,6 +2,7 @@ package com.dillonbeliveau.ts3status.service;
 
 import com.dillonbeliveau.ts3status.model.ParsedClient;
 import com.github.theholywaffle.teamspeak3.TS3Api;
+import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 public class TS3Service {
     @Autowired
-    private TS3Api api;
+    private TS3Query ts3Query;
 
     private LoadingCache<CacheKey, List<Client>> clients;
 
@@ -33,7 +34,7 @@ public class TS3Service {
                     public List<Client> load(CacheKey cacheKey) {
                         switch (cacheKey) {
                             case Online:
-                                List<Client> clients = api.getClients();
+                                List<Client> clients = ts3Query.getApi().getClients();
                                 if (clients == null) {
                                     return Collections.emptyList();
                                 }
