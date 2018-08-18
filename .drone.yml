@@ -1,3 +1,4 @@
+
 pipeline:
     build:
         image: maven:3-jdk-10
