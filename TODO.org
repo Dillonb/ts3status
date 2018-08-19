@@ -1,0 +1,3 @@
+* TODO Remove ts3 host/password from source, grab it from an env var
+* TODO add a "last seen" feature for offline users, save both the last time they were connected and the last time they spoke
+* TODO add a chat box to interact with people on the server
