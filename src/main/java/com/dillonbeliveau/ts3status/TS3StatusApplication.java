@@ -5,25 +5,29 @@ import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ConnectionHandler;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class TS3StatusApplication {
-
     @Bean
-    public TS3Config ts3Config() {
+    public TS3Config ts3Config(
+            @Value("${ts3.server.host}") String ts3Host,
+            @Value("${ts3.server.user}") String ts3User,
+            @Value("${ts3.server.pass}") String ts3Password,
+            @Value("${ts3.server.nick}") String ts3Nick) {
         TS3Config ts3Config = new TS3Config();
-        ts3Config.setHost("cyphe.red");
+        ts3Config.setHost(ts3Host);
         ts3Config.setReconnectStrategy(ReconnectStrategy.constantBackoff(1000));
         ts3Config.setConnectionHandler(new ConnectionHandler() {
             @Override
             public void onConnect(TS3Query ts3Query) {
                 TS3Api api = ts3Query.getApi();
-                api.login("dgb", "***REMOVED***");
+                api.login(ts3User, ts3Password);
                 api.selectVirtualServerById(1);
-                api.setNickname("ServerMonitorBot");
+                api.setNickname(ts3Nick);
             }
 
             @Override
