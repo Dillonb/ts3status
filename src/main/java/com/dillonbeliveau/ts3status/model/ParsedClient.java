@@ -13,7 +13,7 @@ public class ParsedClient {
     private final String idleFor;
     private boolean isOnline;
     private String nickname;
-    private Date dateConnected;
+    private String connected;
     private Date dateDisconnected;
     private String idleSince;
 
@@ -29,7 +29,7 @@ public class ParsedClient {
     public ParsedClient(Client client) {
         this.isOnline = true;
         this.nickname = client.getNickname();
-        this.dateConnected = client.getLastConnectedDate();
+        this.connected = dateFormat.format(client.getLastConnectedDate());
         this.idleSince = dateFormat.format(Date.from(Instant.now().minusMillis(client.getIdleTime())));
         this.idleFor = getTimeSinceText(client.getIdleTime());
     }
@@ -39,7 +39,7 @@ public class ParsedClient {
     }
 
     public String getConnected() {
-        return dateFormat.format(dateConnected);
+        return connected;
     }
 
     public String getDateDisconnected() {
@@ -64,10 +64,12 @@ public class ParsedClient {
 
     public void setOnline(boolean online) {
         isOnline = online;
-        if (isOnline)
+        if (isOnline) {
             dateDisconnected = null;
-        else
+        }
+        else {
             dateDisconnected = new Date();
+        }
     }
 
     private String getTimeSinceText(long timeSinceMs) {

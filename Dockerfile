@@ -1,4 +1,4 @@
-FROM maven:3-jdk-11
+FROM maven:3.8.5-openjdk-17
 COPY pom.xml /app/
 COPY src /app/src
 WORKDIR /app
