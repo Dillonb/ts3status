@@ -11,7 +11,6 @@ import java.util.Objects;
 public class ParsedClient {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final String idleFor;
-    private boolean isOnline;
     private String nickname;
     private String connected;
     private Date lastSeen;
@@ -28,7 +27,6 @@ public class ParsedClient {
     }
 
     public ParsedClient(Client client) {
-        this.isOnline = true;
         this.nickname = client.getNickname();
         this.connected = dateFormat.format(client.getLastConnectedDate());
         this.idleSince = dateFormat.format(Date.from(Instant.now().minusMillis(client.getIdleTime())));
@@ -55,10 +53,6 @@ public class ParsedClient {
 
     public String getIdleFor() {
         return idleFor;
-    }
-
-    public boolean isOnline() {
-        return isOnline;
     }
 
     public String getOfflineSince() {
