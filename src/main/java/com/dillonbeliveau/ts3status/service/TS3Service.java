@@ -54,7 +54,7 @@ public class TS3Service {
                 });
     }
 
-    @Scheduled(fixedRate = 1_000)
+    @Scheduled(fixedRate = 10_000)
     public List<ParsedClient> getOnlineClients() {
         return onlineClients.getUnchecked(CacheKey.Online);
     }
