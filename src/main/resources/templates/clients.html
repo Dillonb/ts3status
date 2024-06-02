@@ -2,7 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>TS3 Server Status</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </head>
     <style>
         /* Style the tab */
@@ -43,86 +46,65 @@
         }
     </style>
     <body>
-
-        <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'Online')" id="defaultOpen">Online</button>
-            <button class="tablinks" onclick="openTab(event, 'Offline')">Offline</button>
+        <ul class="nav nav-tabs" id="online-offline-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="online-tab" data-toggle="tab" href="#online" role="tab" aria-controls="online" aria-selected="true">Online Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="offline-tab" data-toggle="tab" href="#offline" role="tab" aria-controls="offline" aria-selected="false">Offline Users</a>
+            </li>
+        </ul>
+    
+        <div class="tab-content" id="tab-content">
+            <div class="tab-pane fade show active" id="online" role="tabpanel" aria-labelledby="online-tab">
+                <table class="table table-striped thead-dark table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">
+                                Nickname
+                            </th>
+                            <th scope="col">
+                                Connected since
+                            </th>
+                            <th scope="col">
+                                Idle for
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="client : ${clients}">
+                            <td th:text="${client.nickname}">nickname</td>
+                            <td th:text="${client.connected}">connected</td>
+                            <td th:text="${client.idleFor}">idle for</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="tab-pane fade show" id="offline" role="tabpanel" aria-labelledby="offline-tab">
+                <table class="table table-striped thead-dark table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">
+                                Nickname
+                            </th>
+                            <th scope="col">
+                                Last seen
+                            </th>
+                            <th scope="col">
+                                Offline for
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="client : ${offlineClients}">
+                            <td th:text="${client.nickname}">nickname</td>
+                            <td th:text="${client.lastSeen}">Last seen</td>
+                            <td th:text="${client.offlineSince}">Offline for</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <div id="Online" class="container-fluid tabcontent">
-            <table class="table table-striped thead-dark table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">
-                            Nickname
-                        </th>
-                        <th scope="col">
-                            Connected since
-                        </th>
-                        <th scope="col">
-                            Idle for
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="client : ${clients}">
-                        <td th:text="${client.nickname}">nickname</td>
-                        <td th:text="${client.connected}">connected</td>
-                        <td th:text="${client.idleFor}">idle for</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="Offline" class="tabcontent">
-            <table class="table table-striped thead-dark table-bordered table-hover">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">
-                        Nickname
-                    </th>
-                    <th scope="col">
-                        Last seen
-                    </th>
-                    <th scope="col">
-                        Offline for
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="client : ${offlineClients}">
-                    <td th:text="${client.nickname}">nickname</td>
-                    <td th:text="${client.lastSeen}">Last seen</td>
-                    <td th:text="${client.offlineSince}">Offline for</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-
-    <script>
-        function openTab(evt, tabName) {
-          // Declare all variables
-          var i, tabcontent, tablinks;
-
-          // Get all elements with class="tabcontent" and hide them
-          tabcontent = document.getElementsByClassName("tabcontent");
-          for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-          }
-
-          // Get all elements with class="tablinks" and remove the class "active"
-          tablinks = document.getElementsByClassName("tablinks");
-          for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-          }
-
-          // Show the current tab, and add an "active" class to the button that opened the tab
-          document.getElementById(tabName).style.display = "block";
-          evt.currentTarget.className += " active";
-        }
-
-        document.getElementById("defaultOpen").click();
-    </script>
     </body>
 </html>
