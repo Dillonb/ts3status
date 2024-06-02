@@ -6,13 +6,15 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 public class ParsedClient {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final String idleFor;
-
+    private boolean isOnline;
     private String nickname;
-    private String connected;
+    private Date dateConnected;
+    private Date dateDisconnected;
     private String idleSince;
 
     private String sOrNoS(long x) {
@@ -25,13 +27,52 @@ public class ParsedClient {
     }
 
     public ParsedClient(Client client) {
+        this.isOnline = true;
         this.nickname = client.getNickname();
-        this.connected = dateFormat.format(client.getLastConnectedDate());
+        this.dateConnected = client.getLastConnectedDate();
         this.idleSince = dateFormat.format(Date.from(Instant.now().minusMillis(client.getIdleTime())));
+        this.idleFor = getTimeSinceText(client.getIdleTime());
+    }
 
+    public String getNickname() {
+        return nickname;
+    }
 
+    public String getConnected() {
+        return dateFormat.format(dateConnected);
+    }
+
+    public String getDateDisconnected() {
+        return dateFormat.format(dateDisconnected);
+    }
+
+    public String getIdleSince() {
+        return idleSince;
+    }
+
+    public String getIdleFor() {
+        return idleFor;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public String getOfflineSince() {
+        return getTimeSinceText(new Date().getTime() - dateDisconnected.getTime());
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+        if (isOnline)
+            dateDisconnected = null;
+        else
+            dateDisconnected = new Date();
+    }
+
+    private String getTimeSinceText(long timeSinceMs) {
         StringBuilder idleForText = new StringBuilder();
-        Duration idleFor = Duration.ofMillis(client.getIdleTime());
+        Duration idleFor = Duration.ofMillis(timeSinceMs);
 
         boolean atLeastOnePart = false;
 
@@ -54,23 +95,19 @@ public class ParsedClient {
             idleForText.append(idleFor.toSecondsPart()).append(" second").append(sOrNoS(idleFor.toSecondsPart())).append(" ");
         }
 
-        this.idleFor = idleForText.toString();
-
+        return idleForText.toString();
     }
 
-    public String getNickname() {
-        return nickname;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParsedClient that = (ParsedClient) o;
+        return Objects.equals(nickname, that.nickname);
     }
 
-    public String getConnected() {
-        return connected;
-    }
-
-    public String getIdleSince() {
-        return idleSince;
-    }
-
-    public String getIdleFor() {
-        return idleFor;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nickname);
     }
 }
