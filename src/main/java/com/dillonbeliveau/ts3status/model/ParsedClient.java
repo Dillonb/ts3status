@@ -14,8 +14,9 @@ public class ParsedClient {
     private boolean isOnline;
     private String nickname;
     private String connected;
-    private Date dateDisconnected;
+    private Date lastSeen;
     private String idleSince;
+    private String uniqueId;
 
     private String sOrNoS(long x) {
         if (x == 1) {
@@ -32,6 +33,8 @@ public class ParsedClient {
         this.connected = dateFormat.format(client.getLastConnectedDate());
         this.idleSince = dateFormat.format(Date.from(Instant.now().minusMillis(client.getIdleTime())));
         this.idleFor = getTimeSinceText(client.getIdleTime());
+        this.uniqueId = client.getUniqueIdentifier();
+        this.lastSeen = new Date();
     }
 
     public String getNickname() {
@@ -42,8 +45,8 @@ public class ParsedClient {
         return connected;
     }
 
-    public String getDateDisconnected() {
-        return dateFormat.format(dateDisconnected);
+    public String getLastSeen() {
+        return dateFormat.format(lastSeen);
     }
 
     public String getIdleSince() {
@@ -59,17 +62,11 @@ public class ParsedClient {
     }
 
     public String getOfflineSince() {
-        return getTimeSinceText(new Date().getTime() - dateDisconnected.getTime());
+        return getTimeSinceText(new Date().getTime() - lastSeen.getTime());
     }
 
-    public void setOnline(boolean online) {
-        isOnline = online;
-        if (isOnline) {
-            dateDisconnected = null;
-        }
-        else {
-            dateDisconnected = new Date();
-        }
+    public String getUniqueId() {
+        return uniqueId;
     }
 
     private String getTimeSinceText(long timeSinceMs) {
@@ -105,11 +102,11 @@ public class ParsedClient {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ParsedClient that = (ParsedClient) o;
-        return Objects.equals(nickname, that.nickname);
+        return Objects.equals(uniqueId, that.uniqueId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(nickname);
+        return Objects.hashCode(uniqueId);
     }
 }

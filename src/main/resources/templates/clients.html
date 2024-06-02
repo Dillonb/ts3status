@@ -92,7 +92,7 @@
                 <tbody>
                 <tr th:each="client : ${offlineClients}">
                     <td th:text="${client.nickname}">nickname</td>
-                    <td th:text="${client.dateDisconnected}">Last seen</td>
+                    <td th:text="${client.lastSeen}">Last seen</td>
                     <td th:text="${client.offlineSince}">Offline for</td>
                 </tr>
                 </tbody>

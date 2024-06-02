@@ -6,6 +6,8 @@ import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Sets;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,46 +22,46 @@ public class TS3Service {
     @Autowired
     private TS3Query ts3Query;
 
-    private final LoadingCache<CacheKey, List<ParsedClient>> onlineClients;
-    private final HashMap<String, ParsedClient> allClients = new HashMap<>();
-
+    // Hack: single element LoadingCache
     private enum CacheKey {
-        Online
+        Dummy
     }
+    private final LoadingCache<CacheKey, Set<ParsedClient>> onlineClientsCache;
+
+    private Set<ParsedClient> allClients = new HashSet<>();
+    private Set<ParsedClient> offlineClients = new HashSet<>();
 
     public TS3Service() {
-        onlineClients = CacheBuilder.newBuilder()
+        onlineClientsCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(10, TimeUnit.SECONDS)
                 .build(new CacheLoader<>() {
                     @Override
-                    public List<ParsedClient> load(CacheKey cacheKey) {
-                        switch (cacheKey) {
-                            case Online:
-                                List<ParsedClient> clients = ts3Query.getApi().getClients().stream()
-                                        .filter(Client::isRegularClient)
-                                        .map(ParsedClient::new)
-                                        .collect(Collectors.toList());
-
-                                allClients.values().stream()
-                                        .filter(ParsedClient::isOnline)
-                                        .forEach(c -> c.setOnline(false));
-
-                                clients.forEach(c -> allClients.put(c.getNickname(), c));
-                                return clients;
-                            default:
-                                throw new IllegalArgumentException("Illegal cache key: " + cacheKey);
-
-                        }
+                    public Set<ParsedClient> load(CacheKey cacheKey) {
+                        return ts3Query.getApi().getClients().stream()
+                                .filter(Client::isRegularClient)
+                                .map(ParsedClient::new)
+                                .collect(Collectors.toSet());
                     }
                 });
     }
 
     @Scheduled(fixedRate = 10_000)
-    public List<ParsedClient> getOnlineClients() {
-        return onlineClients.getUnchecked(CacheKey.Online);
+    void refresh() {
+        Set<ParsedClient> onlineClients = onlineClientsCache.getUnchecked(CacheKey.Dummy);
+
+        // Build a new set of all clients, giving priority to the new online clients.
+        Set<ParsedClient> allClientsNew = new HashSet<>(onlineClients);
+        allClientsNew.addAll(allClients);
+        allClients = allClientsNew;
+
+        offlineClients = Sets.difference(allClients, onlineClients);
     }
 
-    public List<ParsedClient> getOfflineClients() {
-        return allClients.values().stream().filter(Predicate.not(ParsedClient::isOnline)).toList();
+    public Set<ParsedClient> getOnlineClients() {
+        return onlineClientsCache.getUnchecked(CacheKey.Dummy);
+    }
+
+    public Set<ParsedClient> getOfflineClients() {
+        return offlineClients;
     }
 }
