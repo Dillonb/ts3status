@@ -7,44 +7,15 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </head>
-    <style>
-        /* Style the tab */
-        .tab {
-          overflow: hidden;
-          border: 1px solid #ccc;
-          background-color: #f1f1f1;
-        }
-
-        /* Style the buttons inside the tab */
-        .tab button {
-          background-color: inherit;
-          float: left;
-          border: none;
-          outline: none;
-          cursor: pointer;
-          padding: 14px 16px;
-          transition: 0.3s;
-          font-size: 17px;
-        }
-
-        /* Change background color of buttons on hover */
-        .tab button:hover {
-          background-color: #ddd;
-        }
-
-        /* Create an active/current tablink class */
-        .tab button.active {
-          background-color: #ccc;
-        }
-
-        /* Style the tab content */
-        .tabcontent {
-          display: none;
-          padding: 6px 12px;
-          border: 1px solid #ccc;
-          border-top: none;
-        }
-    </style>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Rewrite all dates to local time
+            $('.rewrite-date').each(function() {
+                var timestamp = $(this).data('timestamp');
+                $(this).text(new Date(timestamp).toLocaleString());
+            });
+        });
+    </script>
     <body>
         <ul class="nav nav-tabs" id="online-offline-tabs" role="tablist">
             <li class="nav-item">
@@ -74,7 +45,7 @@
                     <tbody>
                         <tr th:each="client : ${clients}">
                             <td th:text="${client.nickname}">nickname</td>
-                            <td th:text="${client.connected}">connected</td>
+                            <td th:text="${client.connectedSince}" class="rewrite-date" th:attr="data-timestamp=${client.connectedSinceTimestamp}">connected</td>
                             <td th:text="${client.idleFor}">idle for</td>
                         </tr>
                     </tbody>
@@ -99,8 +70,8 @@
                     <tbody>
                         <tr th:each="client : ${offlineClients}">
                             <td th:text="${client.nickname}">nickname</td>
-                            <td th:text="${client.lastSeen}">Last seen</td>
-                            <td th:text="${client.offlineSince}">Offline for</td>
+                            <td th:text="${client.lastSeen}" class="rewrite-date" th:attr="data-timestamp=${client.lastSeenTimestamp}">Last seen</td>
+                            <td th:text="${client.offlineFor}">Offline for</td>
                         </tr>
                     </tbody>
                 </table>

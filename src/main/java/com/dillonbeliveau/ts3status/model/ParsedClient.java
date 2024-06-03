@@ -12,9 +12,9 @@ public class ParsedClient {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final String idleFor;
     private String nickname;
-    private String connected;
+    private Date connectedSince;
     private Date lastSeen;
-    private String idleSince;
+    private Date idleSince;
     private String uniqueId;
 
     private String sOrNoS(long x) {
@@ -28,8 +28,8 @@ public class ParsedClient {
 
     public ParsedClient(Client client) {
         this.nickname = client.getNickname();
-        this.connected = dateFormat.format(client.getLastConnectedDate());
-        this.idleSince = dateFormat.format(Date.from(Instant.now().minusMillis(client.getIdleTime())));
+        this.connectedSince = client.getLastConnectedDate();
+        this.idleSince = Date.from(Instant.now().minusMillis(client.getIdleTime()));
         this.idleFor = getTimeSinceText(client.getIdleTime());
         this.uniqueId = client.getUniqueIdentifier();
         this.lastSeen = new Date();
@@ -39,23 +39,35 @@ public class ParsedClient {
         return nickname;
     }
 
-    public String getConnected() {
-        return connected;
+    public String getConnectedSince() {
+        return dateFormat.format(connectedSince);
+    }
+
+    public long getConnectedSinceTimestamp() {
+        return connectedSince.getTime();
     }
 
     public String getLastSeen() {
         return dateFormat.format(lastSeen);
     }
 
+    public long getLastSeenTimestamp() {
+        return lastSeen.getTime();
+    }
+
     public String getIdleSince() {
-        return idleSince;
+        return dateFormat.format(this.idleSince);
+    }
+
+    public long getIdleSinceTimestamp() {
+        return this.idleSince.getTime();
     }
 
     public String getIdleFor() {
         return idleFor;
     }
 
-    public String getOfflineSince() {
+    public String getOfflineFor() {
         return getTimeSinceText(new Date().getTime() - lastSeen.getTime());
     }
 
