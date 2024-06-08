@@ -2,3 +2,7 @@
 target/
 *.iml
 .vscode
+.classpath
+.project
+.settings
+*.sqlite

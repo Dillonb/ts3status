@@ -1,6 +1,10 @@
 package com.dillonbeliveau.ts3status.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -8,13 +12,25 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
+@Entity
 public class ParsedClient {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final String idleFor;
+
+    @JsonProperty("idleFor")
+    private String idleFor;
+    @JsonProperty("nickname")
     private String nickname;
+    @JsonProperty("connectedSince")
     private Date connectedSince;
+    @JsonProperty("lastSeen")
     private Date lastSeen;
+    @JsonProperty("idleSince")
     private Date idleSince;
+    @JsonProperty("online")
+    private boolean online;
+
+    @Id
+    @JsonProperty("uniqueId")
     private String uniqueId;
 
     private String sOrNoS(long x) {
@@ -33,7 +49,10 @@ public class ParsedClient {
         this.idleFor = getTimeSinceText(client.getIdleTime());
         this.uniqueId = client.getUniqueIdentifier();
         this.lastSeen = new Date();
+        this.online = true;
     }
+
+    public ParsedClient() {}
 
     public String getNickname() {
         return nickname;
@@ -75,6 +94,14 @@ public class ParsedClient {
         return uniqueId;
     }
 
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+    
     private String getTimeSinceText(long timeSinceMs) {
         StringBuilder idleForText = new StringBuilder();
         Duration idleFor = Duration.ofMillis(timeSinceMs);

@@ -1,5 +1,14 @@
 # Copy this file to application.properties, and edit the properties to correct values.
+
+# How to connect to the TeamSpeak server?
 ts3.server.host=hostname
 ts3.server.user=username
 ts3.server.pass=password
 ts3.server.nick=nickname
+
+# Where to store the db?
+sqlite.jdbc.url=jdbc:sqlite:path/to/db.sqlite
+
+# Don't change this: auto create database tables
+spring.jpa.generate-ddl=true
+spring.jpa.hibernate.ddl-auto=create

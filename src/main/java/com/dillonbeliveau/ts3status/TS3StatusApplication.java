@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import javax.sql.DataSource;
 
 @SpringBootApplication
 @EnableScheduling
@@ -37,6 +39,14 @@ public class TS3StatusApplication {
             }
         });
         return ts3Config;
+    }
+
+    @Bean
+    public DataSource DataSource(@Value("${sqlite.jdbc.url}") String url) {
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.sqlite.JDBC");
+        dataSource.setUrl(url);
+        return dataSource;
     }
 
     @Bean
