@@ -11,4 +11,4 @@ sqlite.jdbc.url=jdbc:sqlite:path/to/db.sqlite
 
 # Don't change this: auto create database tables
 spring.jpa.generate-ddl=true
-spring.jpa.hibernate.ddl-auto=create
+spring.jpa.hibernate.ddl-auto=update
