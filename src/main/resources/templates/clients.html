@@ -23,6 +23,11 @@
             }
 
             $(document).ready(function() {
+                if (document.location.hash.endsWith("offline")) {
+                    $("#offline-tab").click();
+                } else if (document.location.hash.endsWith("online") || document.location.hash === "") {
+                    $("#online-tab").click();
+                }
                 refresh();
                 setInterval(refresh, 10000);
             });
@@ -31,10 +36,10 @@
     <body>
         <ul class="nav nav-tabs" id="online-offline-tabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="online-tab" data-toggle="tab" href="#online" role="tab" aria-controls="online" aria-selected="true">Online Users</a>
+                <a class="nav-link active" id="online-tab" data-toggle="tab" href="#online" role="tab" aria-controls="online" aria-selected="true" onclick="document.location.hash='online'">Online Users</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="offline-tab" data-toggle="tab" href="#offline" role="tab" aria-controls="offline" aria-selected="false">Offline Users</a>
+                <a class="nav-link" id="offline-tab" data-toggle="tab" href="#offline" role="tab" aria-controls="offline" aria-selected="false" onclick="document.location.hash='offline'">Offline Users</a>
             </li>
         </ul>
     
