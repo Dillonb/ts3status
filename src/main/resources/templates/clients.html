@@ -3,16 +3,28 @@
     <head>
         <title>TS3 Server Status</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
         <script type="text/javascript">
-            $(document).ready(function() {
-                // Rewrite all dates to local time
-                $('[data-timestamp]').each(function() {
-                    var timestamp = $(this).data('timestamp');
-                    $(this).text(new Date(timestamp).toLocaleString());
+            Handlebars.registerHelper('timestamp', function (timestamp) {
+                return new Date(timestamp).toLocaleString();
+            });
+
+            var onlineClientsTemplate = Handlebars.compile("{{#clients}}<tr><td>{{this.nickname}}</td><td>{{timestamp this.connectedSinceTimestamp}}</td><td>{{this.idleFor}}</td></tr>{{/clients}}");
+            var offlineClientsTemplate = Handlebars.compile("{{#clients}}<tr><td>{{this.nickname}}</td><td>{{timestamp this.lastSeenTimestamp}}</td><td>{{this.offlineFor}}</td></tr>{{/clients}}");
+
+            function refresh() {
+                $.get('/api/clients/all', function(allClients) {
+                    $('#online-list').html(onlineClientsTemplate({clients: allClients.filter(client => client.online)}));
+                    $('#offline-list').html(offlineClientsTemplate({clients: allClients.filter(client => !client.online)}));
                 });
+            }
+
+            $(document).ready(function() {
+                refresh();
+                setInterval(refresh, 10000);
             });
         </script>
     </head>
@@ -42,12 +54,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="client : ${clients}">
-                            <td th:text="${client.nickname}">nickname</td>
-                            <td th:text="${client.connectedSince}" th:attr="data-timestamp=${client.connectedSinceTimestamp}">connected</td>
-                            <td th:text="${client.idleFor}">idle for</td>
-                        </tr>
+                    <tbody id="online-list">
                     </tbody>
                 </table>
             </div>
@@ -67,12 +74,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="client : ${offlineClients}">
-                            <td th:text="${client.nickname}">nickname</td>
-                            <td th:text="${client.lastSeen}" th:attr="data-timestamp=${client.lastSeenTimestamp}">Last seen</td>
-                            <td th:text="${client.offlineFor}">Offline for</td>
-                        </tr>
+                    <tbody id="offline-list">
                     </tbody>
                 </table>
             </div>
