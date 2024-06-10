@@ -16,9 +16,17 @@
             var offlineClientsTemplate = Handlebars.compile("{{#clients}}<tr><td>{{this.nickname}}</td><td>{{timestamp this.lastSeenTimestamp}}</td><td>{{this.offlineFor}}</td></tr>{{/clients}}");
 
             function refresh() {
-                $.get('/api/clients/all', function(allClients) {
-                    $('#online-list').html(onlineClientsTemplate({clients: allClients.filter(client => client.online)}));
-                    $('#offline-list').html(offlineClientsTemplate({clients: allClients.filter(client => !client.online)}));
+                $.get('/api/clients/all', function (allClients) {
+                    $('#online-list').html(onlineClientsTemplate({
+                        clients: allClients
+                            .filter(client => client.online)
+                            .sort((a, b) => a.connectedSinceTimestamp - b.connectedSinceTimestamp)
+                    }));
+                    $('#offline-list').html(offlineClientsTemplate({
+                        clients: allClients
+                        .filter(client => !client.online)
+                        .sort((a, b) => b.lastSeenTimestamp - a.lastSeenTimestamp)
+                    }));
                 });
             }
 
@@ -42,7 +50,7 @@
                 <a class="nav-link" id="offline-tab" data-toggle="tab" href="#offline" role="tab" aria-controls="offline" aria-selected="false" onclick="document.location.hash='offline'">Offline Users</a>
             </li>
         </ul>
-    
+
         <div class="tab-content" id="tab-content">
             <div class="tab-pane fade show active" id="online" role="tabpanel" aria-labelledby="online-tab">
                 <table class="table table-striped thead-dark table-bordered table-hover">
@@ -63,7 +71,7 @@
                     </tbody>
                 </table>
             </div>
-    
+
             <div class="tab-pane fade show" id="offline" role="tabpanel" aria-labelledby="offline-tab">
                 <table class="table table-striped thead-dark table-bordered table-hover">
                     <thead class="thead-dark">
