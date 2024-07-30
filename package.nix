@@ -1,4 +1,8 @@
-{ lib, pkgs, ... }:
+{ lib
+, pkgs
+, configFilePath ? "/etc/ts3status/application.properties"
+, ...
+}:
 let
   jdk_headless = pkgs.jdk17_headless;
   maven = pkgs.maven.override { jdk = jdk_headless; };
@@ -20,7 +24,8 @@ maven.buildMavenPackage {
     install -Dm644 target/ts3status-1.0-SNAPSHOT.jar $out/share/ts3status
 
     makeWrapper ${jdk_headless}/bin/java $out/bin/ts3status \
-    --add-flags "-jar $out/share/ts3status/ts3status-1.0-SNAPSHOT.jar"
+    --add-flags "-jar $out/share/ts3status/ts3status-1.0-SNAPSHOT.jar" \
+    --set SPRING_CONFIG_LOCATION ${configFilePath}
   '';
   meta = with lib; {
     description = "TeamSpeak 3 status page";
