@@ -57,6 +57,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.dillonbeliveau.ts3status.TS3StatusApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
