@@ -6,22 +6,26 @@
     systems.url = "github:nix-systems/default";
   };
 
-  outputs = { self, nixpkgs, systems }: let
-    eachSystem = nixpkgs.lib.genAttrs (import systems);
-  in {
+  outputs = { self, nixpkgs, systems }:
+    let
+      eachSystem = nixpkgs.lib.genAttrs (import systems);
+    in
+    {
 
-    # I don't think I need this, since we'll always be overriding the config path
-    packages = eachSystem (system: {
-        ts3status = nixpkgs.legacyPackages.${system}.callPackage ./package.nix {};
-        });
+      # I don't think I need this, since we'll always be overriding the config path
+      packages = eachSystem (system: {
+        ts3status = nixpkgs.legacyPackages.${system}.callPackage ./package.nix { };
+      });
 
-    nixosModules.ts3status = ./ts3status.nix;
-    nixosModules.default = self.nixosModules.ts3status;
+      nixosModules.ts3status = ./ts3status.nix;
+      nixosModules.default = self.nixosModules.ts3status;
 
-    devShells = eachSystem (system: let
+      devShells = eachSystem (system:
+        let
           pkgs = nixpkgs.legacyPackages.${system};
-        in {
+        in
+        {
           default = pkgs.mkShell { buildInputs = [ pkgs.maven pkgs.temurin-bin-17 pkgs.jdt-language-server ]; };
         });
-  };
+    };
 }

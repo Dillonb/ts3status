@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
-let user = "ts3status";
-    group = "ts3status";
-    cfg = config.services.ts3status;
+let
+  user = "ts3status";
+  cfg = config.services.ts3status;
 in
 {
   options = {
@@ -40,16 +40,9 @@ in
 
       users.users.ts3status = {
         description = "ts3status TeamSpeak 3 Status Page";
-        group = group;
-        uid = config.ids.uids.ts3status;
         home = cfg.dataDir;
         createHome = true;
       };
-
-      users.groups.ts3status = {
-        gid = config.ids.gids.ts3status;
-      };
-
 
       systemd.services.teamspeak3-server = {
         description = "ts3status TeamSpeak 3 Status Page";
@@ -60,7 +53,6 @@ in
           ExecStart = "${ts3status}/bin/ts3status";
           WorkingDirectory = cfg.dataDir;
           User = user;
-          Group = group;
           Restart = "on-failure";
         };
       };
