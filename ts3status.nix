@@ -41,6 +41,7 @@ in
 
       users.users.ts3status = {
         description = "ts3status TeamSpeak 3 Status Page";
+        isNormalUser = true; # Allocate a user id >1000
         home = cfg.dataDir;
         group = group;
         createHome = true;
