@@ -49,7 +49,7 @@ in
       users.groups."${group}" = {};
 
 
-      systemd.services.teamspeak3-server = {
+      systemd.services.ts3status = {
         description = "ts3status TeamSpeak 3 Status Page";
         after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
