@@ -13,7 +13,7 @@ maven.buildMavenPackage {
   src = lib.fileset.toSource {
     root = ./.;
     fileset = lib.fileset.unions [
-      (lib.fileset.difference ./src ./src/main/resources/application.properties)
+      (lib.fileset.difference ./src (lib.fileset.maybeMissing ./src/main/resources/application.properties))
       ./pom.xml
     ];
   };
