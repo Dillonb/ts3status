@@ -12,13 +12,9 @@
     in
     {
 
-      # I don't think I need this, since we'll always be overriding the config path
       packages = eachSystem (system: {
         ts3status = nixpkgs.legacyPackages.${system}.callPackage ./package.nix { };
       });
-
-      nixosModules.ts3status = ./ts3status.nix;
-      nixosModules.default = self.nixosModules.ts3status;
 
       devShells = eachSystem (system:
         let
