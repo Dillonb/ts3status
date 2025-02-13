@@ -12,8 +12,13 @@
     in
     {
 
-      packages = eachSystem (system: {
+      packages = eachSystem (system: 
+      let
         ts3status = nixpkgs.legacyPackages.${system}.callPackage ./package.nix { };
+      in
+      {
+        ts3status = ts3status;
+        default = ts3status;
       });
 
       devShells = eachSystem (system:

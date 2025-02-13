@@ -1,13 +1,10 @@
 { lib
 , pkgs
 , configFilePath ? "/etc/ts3status/application.properties"
+, jre
 , ...
 }:
-let
-  jdk_headless = pkgs.jdk17_headless;
-  maven = pkgs.maven.override { jdk = jdk_headless; };
-in
-maven.buildMavenPackage {
+pkgs.maven.buildMavenPackage {
   pname = "ts3status";
   version = "1.0-SNAPSHOT";
   src = lib.fileset.toSource {
@@ -23,7 +20,7 @@ maven.buildMavenPackage {
     mkdir -p $out/bin $out/share/ts3status
     install -Dm644 target/ts3status-1.0-SNAPSHOT.jar $out/share/ts3status
 
-    makeWrapper ${jdk_headless}/bin/java $out/bin/ts3status \
+    makeWrapper ${jre}/bin/java $out/bin/ts3status \
     --add-flags "-jar $out/share/ts3status/ts3status-1.0-SNAPSHOT.jar" \
     --set SPRING_CONFIG_LOCATION ${configFilePath}
   '';
