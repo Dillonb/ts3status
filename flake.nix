@@ -2,7 +2,7 @@
   description = "TeamSpeak 3 Status Page";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/default";
   };
 
@@ -21,7 +21,7 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in
         {
-          default = pkgs.mkShell { buildInputs = [ pkgs.maven pkgs.temurin-bin-17 pkgs.jdt-language-server ]; };
+          default = pkgs.mkShell { buildInputs = [ pkgs.maven pkgs.temurin-bin-21 pkgs.jdt-language-server ]; };
         });
     };
 }
