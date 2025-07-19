@@ -36,6 +36,8 @@
                 } else if (document.location.hash.endsWith("online") || document.location.hash === "") {
                     $("#online-tab").click();
                 }
+                $('#online-list').html("<h1>Loading...</h1>");
+                $('#offline-list').html("<h1>Loading...</h1>");
                 refresh();
                 setInterval(refresh, 10000);
             });
